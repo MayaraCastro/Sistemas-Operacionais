@@ -158,14 +158,6 @@ void ordenaPrioridades() {
 
 /* Thread */
 
-void pth( int pID ) //Simula um Processamento qualquer
-{
-	printf("\n\t\t\t\t  Process That Are Running Is: %i",pID);
-	int j, k;
-	for( j=0; j<16384; j++ )
-		for( k=0; k<8192; k++) ;
-}
-
 void criaProcessos(void){
 	//id, burst, prioridade
 	insere(1,rand()%100,2);
