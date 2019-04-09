@@ -55,7 +55,7 @@ int main( int argc, char* argv[] )
 
   turn = 0;
 
-  printf("Thread \"Main\": Algoritmo de \"alternancia estrita\" \n");
+  printf("Algoritmo de alternancia estrita \n");
 
   if( pthread_create( &th0, NULL, (void *) pth,(void *) 0 ) != 0 ) {
     printf("Error \"pthread_create\" p/ Thread 0.\n");
@@ -82,48 +82,11 @@ int main( int argc, char* argv[] )
     exit(1);
   }
 
-
-  /* Sincroniza o termino da Thread "Main" com as Threads "th0" a "th4" */
-
-  printf("Thread \"Main\": Sincroniza termino com Threads 0 a 4.\n");
-
-
- if(pthread_join( th0, (void *) &r_th0 )) {
-
- 	fprintf(stderr, "Error joining thread\n");
-	return 2;
-
- }
-
- if(pthread_join( th1, (void *) &r_th1 )) {
-
- 	fprintf(stderr, "Error joining thread\n");
-	return 2;
-
- }
-
- if(pthread_join( th2, (void *) &r_th2 )) {
-
- 	fprintf(stderr, "Error joining thread\n");
-	return 2;
-
- }
-
- if(pthread_join( th3, (void *) &r_th3 )) {
-
- 	fprintf(stderr, "Error joining thread\n");
-	return 2;
-
- }
-
- if(pthread_join( th4, (void *) &r_th4 )) {
-
- 	fprintf(stderr, "Error joining thread\n");
-	return 2;
-
- }
-
-  printf("Thread \"Main\": Termina.\n");
+ 	pthread_join(th1, NULL); 
+    pthread_join(th2, NULL); 
+    pthread_join(th3, NULL);
+    pthread_join(th4, NULL); 
+    
   exit(0);
 
 }
