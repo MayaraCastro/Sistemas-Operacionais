@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1555725446 source:c:\users\mayara\desktop\so\segchance\main.c
+	<stdio.h>
+	<string.h>
+	<time.h>
+	<stdlib.h>
+	<stdbool.h>
+	<windows.h>
+

@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1555639023 source:c:\users\mayara\desktop\so\bestfit\main.c
+	<stdio.h>
+	<string.h>
+	<time.h>
+	<stdlib.h>
+	<stdbool.h>
+	<unistd.h>
+
