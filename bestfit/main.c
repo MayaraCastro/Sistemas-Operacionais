@@ -30,59 +30,17 @@ struct processo {
     struct unidadeMem *blocoInicio;
 };
 
-struct blocoMem *cabecaBloco = NULL;
+
 struct processo *cabecaProcesso = NULL;
+struct processo *atualProcesso = NULL;
 
 struct unidadeMem *cabecaMemoria = NULL;
 struct unidadeMem *atualMemoria = NULL;
-
-struct blocoMem *atual = NULL;
-
-struct blocoMem *atualBloco = NULL;
-struct processo *atualProcesso = NULL;
 
 int turn = 1;
 int memTam= 512;
 int memUso=0;
 bool podeDes = true;
-// Funções de lista
-void printBlocos() {
-   struct blocoMem *blocoMem = cabecaBloco;
-   printf("\n\n");
-
-   while(blocoMem != NULL) {
-      printf(" | H%i=%d | ",blocoMem->id,blocoMem->tam);
-      if(blocoMem->processo == NULL){
-        printf("\t | ----- |\n");
-      }else{
-
-      printf("\t | P%i=%d |\n",(blocoMem->processo)->id, (blocoMem->processo)->tam);
-      }
-
-      blocoMem = blocoMem->prox;
-   }
-
-}
-
-//insereBloco o blocoMem na primeira posiçao
-void insereBloco(int id, int tam) {
-   //cria um blocoMem
-   struct blocoMem *blocoMem = (struct blocoMem*) malloc(sizeof(struct blocoMem));
-
-   blocoMem->id = id;
-   blocoMem->tam = tam;
-   blocoMem->processo = NULL;
-
-   blocoMem->prox = NULL;
-    if(atualBloco != NULL){
-           atualBloco->prox = blocoMem;
-
-    }
-    if(cabecaBloco == NULL){
-        cabecaBloco = blocoMem;
-    }
-   atualBloco = blocoMem;
-}
 
 //insereBloco o blocoMem na primeira posiçao
 void insereUnidadeMemoria(int id) {
@@ -165,119 +123,7 @@ struct processo* insereProcesso(int id, int tam, int tempo) {
    return(proceso);
 }
 
-//se a lista ta vazia
-bool isEmpty() {
-   return (cabecaBloco == NULL);
-}
-
-//retorna o tamanho da lista
-int tamanho() {
-   int tamanho = 0;
-   struct blocoMem *atual;
-
-   for(atual = cabecaBloco; atual != NULL; atual = atual->prox) {
-      tamanho++;
-   }
-
-   return tamanho;
-}
-
-//encontra o blocoMem na dada id na lista
-struct blocoMem* findPosicao(int id) {
-   struct blocoMem* atual = cabecaBloco;
-
-   //ve se a lista esta vazia
-   if(cabecaBloco == NULL) {
-      return NULL;
-   }
-
-   while(atual != NULL) {
-        //se a posicao atual é a posicao passada no parametro
-    if(atual->id==id){
-        return atual;
-    }
-        //vai pro prox blocoMem
-    atual = atual->prox;
-
-   }
-
-    return NULL;
-
-}
-
-//deleta o blocoMem do id dado
-struct blocoMem* deleteblocoMem(int id) {
-   struct blocoMem* atual = cabecaBloco;
-   struct blocoMem* anterior = NULL;
-
-   if(cabecaBloco == NULL) {
-      return NULL;
-   }
-
-   while(atual->id != id) {
-
-      if(atual->prox == NULL) {
-         return NULL;
-      } else {
-
-         anterior = atual;
-         atual = atual->prox;
-      }
-   }
-
-   //found a match, update the blocoMem
-   if(atual == cabecaBloco) {
-      //change first to point to prox blocoMem
-      cabecaBloco = cabecaBloco->prox;
-   } else {
-      //bypass the atual blocoMem
-      anterior->prox = atual->prox;
-   }
-
-   return atual;
-}
-
 /* Thread */
-
-/***
-
-***/
-void best_fit(){
-
-    int menorBloco = 10000;
-    int difTam;
-    struct processo* processo = cabecaProcesso;
-
-    while(processo!= NULL){
-
-        struct blocoMem* bloco = cabecaBloco;
-        while(bloco!= NULL) {
-
-            if(bloco->processo == NULL){ //se não tiver processo naquele bloco
-                difTam = bloco->tam - processo->tam;
-                if(difTam >= 0){//verifica se o tamanho do processo cabe no bloco
-                    if(menorBloco>difTam)
-					{
-						processo->bloco = bloco->id;
-						menorBloco = difTam;
-					}
-                }
-            }
-
-            bloco = bloco->prox;
-        }
-
-        if(processo->bloco != -1){
-                findPosicao(processo->bloco)->processo = processo; //pega o processo que entrou primeiro na fila
-        }
-
-        processo = processo->prox;
-        printBlocos();
-        Sleep(1000);
-        menorBloco = 10000;
-    }
-
-}
 
 void alocarUnidades(struct unidadeMem* inicio,int tamBloco, int idProcesso){
     struct unidadeMem* unidadeMem = inicio;
@@ -316,61 +162,6 @@ struct unidadeMem* tamBloco(struct unidadeMem* inicio, int* tam,int idProcesso){
     return(unidadeMem);
 
 }
-
-void best_fit2(){
-
-    struct blocoMem* menorBloco = (struct blocoMem*) malloc(sizeof(struct blocoMem));
-    menorBloco->tam = 10000;
-    menorBloco->id = -1;//n alocado bloco
-
-    int difTam;
-    struct processo* processo = cabecaProcesso;
-    int* tam = malloc(sizeof(int));
-    while(processo!= NULL){
-
-        turn = processo->id;
-        struct unidadeMem* unidadeMem = cabecaMemoria;
-        *tam = 0;
-        while(unidadeMem!= NULL) {
-
-            if(unidadeMem->id == -1){ //se não tiver processo naquele bloco
-               struct unidadeMem* fimBloco =  tamBloco(unidadeMem,tam,unidadeMem->id);
-
-                difTam = *tam - processo->tam;
-                if(difTam >= 0){//verifica se o tamanho do processo cabe no bloco
-                    if(menorBloco->tam > difTam)
-					{
-						menorBloco->inicio = unidadeMem;
-						menorBloco->fim = fimBloco;
-						menorBloco->tam = difTam;
-						menorBloco->id = processo->id; //bloco alocado
-					}
-                }
-                unidadeMem = fimBloco;
-            }else{
-                unidadeMem = unidadeMem->prox;
-            }
-
-
-        }
-
-        if(menorBloco->id != -1){ // se puder alocar
-            alocarUnidades(menorBloco->inicio,processo->tam, processo->id);
-            processo->bloco = 1; //alocado
-            processo->blocoInicio = menorBloco->inicio;
-        }else{
-            printf("\n Memoria insuficiente para o processo %i\n", processo->id);
-        }
-
-        processo = processo->prox;
-        printMemoria();
-        Sleep(1000);
-        menorBloco->tam = 10000;
-        menorBloco->id = -1;//n alocado bloco
-    }
-
-}
-
 
 void compactar(){
     int* tam = malloc(sizeof(int));
@@ -518,20 +309,7 @@ void pth(struct processo* processo){
     }
 
 }
-void criaBlocos(void){
-	//id, burst, prioridade
-	insereBloco(1,200);
-	insereBloco(2,200);
-	insereBloco(3,300);
-	insereBloco(4,400);
-	insereBloco(5,200);
-	insereBloco(6,500);
-	insereBloco(7,600);
-	insereBloco(8,100);
-	insereBloco(9,300);
-	insereBloco(10,400);
 
-}
 void criaProcessos(){
 
    /* insereProcesso(1, 100);
@@ -573,11 +351,11 @@ void criaProcessos(){
     exit(1);
   }
 
-  if( pthread_create( &th5, NULL, (void *) pth,(void *) insereProcesso(6, 100,10000) ) != 0 ) {
+  if( pthread_create( &th5, NULL, (void *) pth,(void *) insereProcesso(6, 100,15000) ) != 0 ) {
     printf("Error \"pthread_create\" p/ Thread 4.\n");
     exit(1);
   }
-  if( pthread_create( &th6, NULL, (void *) pth,(void *) insereProcesso(7, 100,15000) ) != 0 ) {
+  if( pthread_create( &th6, NULL, (void *) pth,(void *) insereProcesso(7, 100,20000) ) != 0 ) {
     printf("Error \"pthread_create\" p/ Thread 4.\n");
     exit(1);
   }
@@ -615,16 +393,9 @@ void criaMemoria(){
 }
 /* ************************************************** Main */
 int main (void) {
-	/*criaBlocos();
-	criaProcessos();
-	best_fit();*/
 	criaMemoria();
 	printMemoria();
-	criaProcessos();
-	//best_fit2();
-//exibir mensagem de eroo e fazer compactacao
-
-
+	criaProcessos(); //e  roda o best fit
 
 	return 0;
 
