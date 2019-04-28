@@ -7,3 +7,12 @@
 	<stdbool.h>
 	<unistd.h>
 
+1556486375 source:c:\users\mayara\desktop\so\sistemas-operacionais\bestfit\main.c
+	<stdio.h>
+	<string.h>
+	<time.h>
+	<stdlib.h>
+	<stdbool.h>
+	<windows.h>
+	<pthread.h>
+
