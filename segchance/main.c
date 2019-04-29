@@ -248,6 +248,8 @@ void segChance(){
     while(paginaVirtual!= NULL){
     printf("\nEncaixando pag %i...", paginaVirtual->id);
         if(paginaVirtual->real == -1){//se tem um MISS, a pag n esta na memoria real
+
+        printf("---!!!!~ PAGE MISS ~!!!!---");
             struct paginaReal* Real = cabecaReal;
             while(Real!= NULL) {
                 if(findID(-1)==NULL){
